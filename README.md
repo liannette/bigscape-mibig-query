@@ -98,7 +98,7 @@ python run_bigscape_query.py --query-bgc my_bgc.gbk
 - `-q, --query-gbk`: Path to your query BGC GenBank file
 - `-o, --output-dir`: Output directory (database will be named `<dirname>.db`)
 - `-p, --pfam-path`: Path to Pfam-A.hmm file
-- `-b, --reference-db`: Path to the reference database
+- `-r, --reference-db`: Path to the reference database
 - `-m, --mibig-version`: MIBiG version (default: 4.0)
 - `-c, --cores`: Number of CPU cores (default: 4)
 - `--quiet`: Run BiG-SCAPE in quiet mode

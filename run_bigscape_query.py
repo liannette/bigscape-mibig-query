@@ -161,7 +161,7 @@ def main():
         help="Output directory for BiG-SCAPE results (database will be named <output-dir-name>.db)"
     )
     parser.add_argument(
-        "-b", "--reference-db",
+        "-r", "--reference-db",
         type=Path,
         help="Path to the reference database"
     )
