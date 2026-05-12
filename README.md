@@ -1,4 +1,4 @@
-# BiG-SCAPE Query Runner
+# BiG-SCAPE MIBiG Query
 
 Automated pipeline for running BiG-SCAPE in query mode to find similar BGCs in MIBiG.
 
