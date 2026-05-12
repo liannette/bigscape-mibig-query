@@ -29,7 +29,7 @@ conda activate bigscape
 
 ### 2. Download Pfam Database
 
-Download and prepare the Pfam-A HMM database:
+Download the Pfam database:
 
 ```bash
 # Create a directory for the database
@@ -49,8 +49,8 @@ cd ../..
 ### 3. Clone This Repository
 
 ```bash
-git clone <repository-url>
-cd <repository-name>
+git clone https://github.com/liannette/bigscape-mibig-query
+cd bigscape-mibig-query
 ```
 
 
