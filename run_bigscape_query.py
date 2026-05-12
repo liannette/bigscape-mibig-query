@@ -161,6 +161,11 @@ def main():
         help="Output directory for BiG-SCAPE results (database will be named <output-dir-name>.db)"
     )
     parser.add_argument(
+        "-b", "--reference-db",
+        type=Path,
+        help="Path to the reference database"
+    )
+    parser.add_argument(
         "-p", "--pfam-path",
         type=Path,
         default=Path("data/pfam/Pfam-A.hmm"),
@@ -205,7 +210,10 @@ def main():
             setup_input_directory(args.query_bgc, temp_input_dir)
             
             # Copy reference database to output directory
-            reference_db = Path("data/reference_db") / f"mibig_{args.mibig_version}" / f"mibig_{args.mibig_version}.db"
+            if args.reference_db:
+                reference_db = args.reference_db
+            else:
+                reference_db = Path("data/reference_db") / f"mibig_{args.mibig_version}" / f"mibig_{args.mibig_version}.db"
             if reference_db.exists():
                 print(f"Using reference database: {reference_db}")
                 setup_database(reference_db, args.output_dir)
