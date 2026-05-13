@@ -96,14 +96,13 @@ python run_bigscape_query.py --query-bgc my_bgc.gbk
 
 **Arguments:**
 - `-q, --query-gbk`: Path to your query BGC GenBank file
-- `-o, --output-dir`: Output directory (database will be named `<dirname>.db`)
+- `-o, --output-dir`: Output directory (default: output_query-gbk-name)
 - `-p, --pfam-path`: Path to Pfam-A.hmm file
 - `-r, --reference-db`: Path to the reference database
 - `-m, --mibig-version`: MIBiG version (default: 4.0)
 - `-c, --cores`: Number of CPU cores (default: 4)
 - `--quiet`: Run BiG-SCAPE in quiet mode
 - `--skip-bigscape`: Only query existing database, skip BiG-SCAPE run
-- `--keep-input-dir`: Keep temporary input directory for debugging
 
 ## Output
 
@@ -152,10 +151,10 @@ distance	mibig_accession
 │   │   └── Pfam-A.hmm.h3*      # HMMER index files (created during first run)
 │   └── reference_db
 │       └── mibig_4.0.db        # Reference database of MIBiG BGCs (if generated)
-└── output/
+└── output_query-gbk-name/
     └── distances.tsv           # Distances between query BGC and MIBiG BGCs
     ├── output.db               # Output database
-    └── query_gbk/              # Temporary (usually deleted)
+    └── query_gbk/              # Contains the query BGC
 ```
 
 

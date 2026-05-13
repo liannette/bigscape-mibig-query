@@ -71,7 +71,8 @@ def run_bigscape(input_dir, query_gbk_name, output_dir, pfam_path, mibig_version
         "--output-dir", str(output_dir),
         "--pfam-path", str(pfam_path),
         "--mibig-version", str(mibig_version),
-        "--cores", str(cores)
+        "--cores", str(cores),
+        "--gcf-cutoffs", "0"
     ]
     
     if quiet:
@@ -157,7 +158,6 @@ def main():
     parser.add_argument(
         "-o", "--output-dir",
         type=Path,
-        default=Path("output"),
         help="Output directory for BiG-SCAPE results (database will be named <output-dir-name>.db)"
     )
     parser.add_argument(
@@ -193,61 +193,55 @@ def main():
         action="store_true",
         help="Skip BiG-SCAPE run and only query existing database"
     )
-    parser.add_argument(
-        "--keep-input-dir",
-        action="store_true",
-        help="Keep temporary input directory after run"
-    )
     
     args = parser.parse_args()
+
+    if args.output_dir:
+        output_dir = Path(args.output_dir)
+    else:
+        output_dir = Path(f"output_{args.query_bgc.stem}")
     
     # Setup temporary input directory
-    temp_input_dir = args.output_dir / "query_gbk"
+    temp_input_dir = output_dir / "query_gbk"
     
-    try:
-        if not args.skip_bigscape:
-            # Create input directory with only the query GBK
-            setup_input_directory(args.query_bgc, temp_input_dir)
-            
-            # Copy reference database to output directory
-            if args.reference_db:
-                reference_db = args.reference_db
-            else:
-                reference_db = Path("data/reference_db") / f"mibig_{args.mibig_version}" / f"mibig_{args.mibig_version}.db"
-            if reference_db.exists():
-                print(f"Using reference database: {reference_db}")
-                setup_database(reference_db, args.output_dir)
-            else:
-                print(f"No reference database found at {reference_db}, BiG-SCAPE will create a new one")
-
-            # Run BiG-SCAPE
-            if not run_bigscape(
-                temp_input_dir,
-                args.query_bgc.name,
-                args.output_dir,
-                args.pfam_path,
-                args.mibig_version,
-                args.cores,
-                args.quiet
-            ):
-                print("BiG-SCAPE run failed, exiting")
-                sys.exit(1)
+    if not args.skip_bigscape:
+        # Create input directory with only the query GBK
+        setup_input_directory(args.query_bgc, temp_input_dir)
+        
+        # Copy reference database to output directory
+        if args.reference_db:
+            reference_db = args.reference_db
         else:
-            print("Skipping BiG-SCAPE run")
-        
-        db_path = args.output_dir / f"{args.output_dir.name}.db"
-        
-        # Query the database
-        query_path_in_db = str(temp_input_dir / args.query_bgc.name)
-        
-        distances_file = args.output_dir / "distances.tsv"
-        if not query_distances(db_path, query_path_in_db, distances_file):
+            reference_db = Path("data/reference_db") / f"mibig_{args.mibig_version}" / f"mibig_{args.mibig_version}.db"
+        if reference_db.exists():
+            print(f"Using reference database: {reference_db}")
+            setup_database(reference_db, output_dir)
+        else:
+            print(f"No reference database found at {reference_db}, BiG-SCAPE will create a new one")
+
+        # Run BiG-SCAPE
+        if not run_bigscape(
+            temp_input_dir,
+            args.query_bgc.name,
+            output_dir,
+            args.pfam_path,
+            args.mibig_version,
+            args.cores,
+            args.quiet
+        ):
+            print("BiG-SCAPE run failed, exiting")
             sys.exit(1)
+    else:
+        print("Skipping BiG-SCAPE run")
     
-    finally:
-        # Cleanup temporary input directory unless --keep-input-dir is set
-        if not args.keep_input_dir and not args.skip_bigscape:
-            cleanup_input_directory(temp_input_dir)
+    db_path = output_dir / f"{output_dir.name}.db"
+    
+    # Query the database
+    query_path_in_db = str(temp_input_dir / args.query_bgc.name)
+    
+    distances_file = output_dir / "distances.tsv"
+    if not query_distances(db_path, query_path_in_db, distances_file):
+        sys.exit(1)
 
 
 if __name__ == "__main__":
